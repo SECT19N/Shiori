@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.library)
 
     id("com.google.devtools.ksp")
+    id("com.google.dagger.hilt.android")
 }
 
 android {
@@ -25,10 +26,13 @@ dependencies {
     implementation(project(":ori"))
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.security.crypto)
+    implementation(libs.androidx.datastore.preferences)
     implementation(libs.converter.moshi)
+    implementation(libs.hilt.android)
     implementation(libs.material)
     implementation(libs.moshi)
+    implementation(libs.moshi.kotlin)
+    ksp(libs.hilt.compiler)
     ksp(libs.moshi.kotlin.codegen)
     implementation(libs.retrofit2.retrofit)
     testImplementation(libs.junit)

@@ -16,5 +16,5 @@ sealed class BottomBarScreen(
 ) {
     object Home : BottomBarScreen("home", "Home", home, homeSelected)
     object Discover : BottomBarScreen("discover", "Discover", explore, exploreSelected)
-    object MyList : BottomBarScreen("myList", "My List", list, listSelected)
+    object MyList : BottomBarScreen("my-list", "My List", list, listSelected)
 }
