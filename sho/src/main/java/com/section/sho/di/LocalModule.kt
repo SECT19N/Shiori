@@ -1,6 +1,7 @@
 package com.section.sho.di
 
 import android.content.Context
+import com.section.sho.local.TokenCipher
 import com.section.sho.local.TokenManager
 import dagger.Module
 import dagger.Provides
@@ -14,9 +15,18 @@ import javax.inject.Singleton
 class LocalModule {
     @Provides
     @Singleton
-    fun provideTokenManager(
+    fun provideTokenCipher(
         @ApplicationContext context: Context
+    ): TokenCipher {
+        return TokenCipher(context)
+    }
+
+    @Provides
+    @Singleton
+    fun provideTokenManager(
+        @ApplicationContext context: Context,
+        tokenCipher: TokenCipher
     ): TokenManager {
-        return TokenManager(context)
+        return TokenManager(context, tokenCipher)
     }
 }

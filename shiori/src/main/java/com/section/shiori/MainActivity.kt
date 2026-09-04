@@ -6,27 +6,37 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.activity.viewModels
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.compose.rememberNavController
 import com.section.shiori.nav.AppNavigation
-import com.section.shiori.screen.login.LoginScreenViewModel
 import com.section.shiori.ui.theme.ShioriTheme
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-    private val loginScreenViewModel: LoginScreenViewModel by viewModels()
+    private var pendingAuthCode by mutableStateOf<String?>(null)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        handleIntent(intent)
         installSplashScreen()
+        handleIntent(intent)
         enableEdgeToEdge()
         setContent {
             ShioriTheme {
-                val navController = rememberNavController()
-                AppNavigation(navController = navController)
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    color = MaterialTheme.colorScheme.background
+                ) {
+                    val navController = rememberNavController()
+                    AppNavigation(navController = navController, pendingAuthCode = pendingAuthCode)
+                }
             }
         }
     }
@@ -40,10 +50,7 @@ class MainActivity : ComponentActivity() {
         val data: Uri? = intent.data
 
         if (data != null && data.scheme == "com.section.shiori" && data.host == "auth-callback") {
-            val authCode = data.getQueryParameter("code")
-            if (authCode != null) {
-                loginScreenViewModel.exchangeCode(authCode)
-            }
+            pendingAuthCode = data.getQueryParameter("code")
         }
     }
 }

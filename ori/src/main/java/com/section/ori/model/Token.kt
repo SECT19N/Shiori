@@ -5,3 +5,7 @@ data class Token(
     val refreshToken: String,
     val expiresAt: Long
 )
+
+fun Token.isExpired(skewMillis: Long = 60_000): Boolean {
+    return System.currentTimeMillis() + skewMillis >= expiresAt
+}

@@ -1,5 +1,3 @@
-import com.android.build.gradle.internal.cxx.configure.gradleLocalProperties
-
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
@@ -21,12 +19,6 @@ android {
         versionCode = 1
         versionName = "0.1"
 
-        val clientId = gradleLocalProperties(rootDir, providers).getProperty("client_id")
-        val codeVerifier = gradleLocalProperties(rootDir, providers).getProperty("code_verifier")
-
-        buildConfigField("String", "CLIENT_ID", "\"$clientId\"")
-        buildConfigField("String", "CODE_VERIFIER", "\"$codeVerifier\"")
-
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -40,10 +32,10 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_21
         targetCompatibility = JavaVersion.VERSION_21
+        isCoreLibraryDesugaringEnabled = true
     }
     buildFeatures {
         compose = true
-        buildConfig = true
     }
 }
 
@@ -53,6 +45,7 @@ dependencies {
     implementation(project(":sho"))
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.browser)
+    implementation(libs.androidx.compose.foundation)
     implementation(libs.androidx.compose.material3)
     implementation(libs.androidx.compose.ui)
     implementation(libs.androidx.compose.ui.graphics)
@@ -62,6 +55,12 @@ dependencies {
     implementation(libs.androidx.hilt.navigation.compose)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.navigation.compose)
+    implementation(libs.androidx.ui)
+    implementation(libs.androidx.paging.compose)
+    implementation(libs.androidx.compose.material.icons.core)
+    implementation(libs.androidx.compose.material.icons.extended)
+    implementation(libs.coil.compose)
+    implementation(libs.coil.network.okhttp)
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
     testImplementation(libs.junit)
@@ -71,4 +70,5 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
     debugImplementation(libs.androidx.compose.ui.tooling)
+    coreLibraryDesugaring(libs.desugar.jdk.libs)
 }

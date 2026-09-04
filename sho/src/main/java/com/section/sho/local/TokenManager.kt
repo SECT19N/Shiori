@@ -13,19 +13,26 @@ import kotlinx.coroutines.flow.map
 
 private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "secure_auth_prefs")
 
-class TokenManager(private val context: Context) {
+class TokenManager(
+    private val context: Context,
+    private val tokenCipher: TokenCipher
+) {
     val tokenFlow: Flow<Token?> = context.dataStore.data.map { preferences ->
-        val accessToken = preferences[KEY_ACCESS_TOKEN] ?: return@map null
-        val refreshToken = preferences[KEY_REFRESH_TOKEN]
+        val encryptedAccessToken = preferences[KEY_ACCESS_TOKEN] ?: return@map null
+        val encryptedRefreshToken = preferences[KEY_REFRESH_TOKEN]
         val expiresAt = preferences[KEY_EXPIRES_AT] ?: 0L
 
-        Token(accessToken, refreshToken ?: "", expiresAt)
+        Token(
+            accessToken = tokenCipher.decrypt(encryptedAccessToken),
+            refreshToken = encryptedRefreshToken?.let { tokenCipher.decrypt(it) } ?: "",
+            expiresAt = expiresAt
+        )
     }
 
     suspend fun saveToken(token: Token) {
         context.dataStore.edit { preferences ->
-            preferences[KEY_ACCESS_TOKEN] = token.accessToken
-            token.refreshToken.let { preferences[KEY_REFRESH_TOKEN] = it }
+            preferences[KEY_ACCESS_TOKEN] = tokenCipher.encrypt(token.accessToken)
+            preferences[KEY_REFRESH_TOKEN] = tokenCipher.encrypt(token.refreshToken)
             preferences[KEY_EXPIRES_AT] = token.expiresAt
         }
     }

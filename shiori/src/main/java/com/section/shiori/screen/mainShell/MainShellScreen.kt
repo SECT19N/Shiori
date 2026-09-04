@@ -10,6 +10,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.section.shiori.nav.BottomBarScreen
+import com.section.shiori.screen.myList.MyListScreen
 
 @Composable
 fun MainShellScreen(rootNavController: NavController) {
@@ -31,8 +32,14 @@ fun MainShellScreen(rootNavController: NavController) {
             composable(BottomBarScreen.Discover.route) {
                 Text("hi1")
             }
+            composable(BottomBarScreen.Seasons.route) {
+                Text("seasons")
+            }
+            composable(BottomBarScreen.Search.route) {
+                Text("search")
+            }
             composable(BottomBarScreen.MyList.route) {
-                Text("hi2")
+                MyListScreen(rootNavController = rootNavController)
             }
         }
     }
